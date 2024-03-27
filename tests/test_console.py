@@ -11,7 +11,8 @@ class TestHBNBCommand(unittest.TestCase):
     def test_quit_command(self, mock_stdout):
         with patch('sys.stdin', StringIO('quit\n')):
             HBNBCommand().cmdloop()
-        self.assertEqual(mock_stdout.getvalue(), '(hbnb) Exiting HBNBCommand...\n')
+        self.assertEqual(mock_stdout.getvalue(),
+                         '(hbnb) Exiting HBNBCommand...\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_create_command(self, mock_stdout):
@@ -26,6 +27,7 @@ class TestHBNBCommand(unittest.TestCase):
         self.assertIn('** instance id missing **', mock_stdout.getvalue())
 
     # Add more tests for other commands...
+
 
 if __name__ == '__main__':
     unittest.main()

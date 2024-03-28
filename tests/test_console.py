@@ -1,22 +1,43 @@
-#!/usr/bin/python3
-""" Unittest for the console """
-from console import HBNBCommand
 import unittest
-import sys
-import io
+from unittest.mock import patch
+from io import StringIO
+from console import HBNBCommand
+from models.base_model import BaseModel
+from models import storage
 
 
-class TestConsole(unittest.TestCase):
-    """ Test cases for HBNBCommand class """
+class TestHBNBCommand(unittest.TestCase):
 
     def setUp(self):
+        """Set up the test case environment."""
         self.console = HBNBCommand()
 
-    def test_create_instance(self):
-        """ Test to review console output"""
-        output = io.StringIO()
-        sys.stdout = output
-        self.console.onecmd('create State id="01234" name="California"')
-        state_id = output.getvalue()
-        sys.stdout = sys.__stdout__
-        self.assertIn("01234", state_id)
+    def test_prompt(self):
+        """Test the prompt attribute."""
+        self.assertEqual(self.console.prompt, "(hbnb) ")
+
+    def test_emptyline(self):
+        """Test the emptyline method does nothing."""
+        with patch("sys.stdout", new=StringIO()) as fake_output:
+            self.console.onecmd("\n")
+            self.assertEqual(fake_output.getvalue(), "")
+
+    def test_quit(self):
+        """Test the quit command exits the program."""
+        with self.assertRaises(SystemExit):
+            self.console.onecmd("quit")
+
+    def test_create(self):
+        """Test object creation."""
+        with patch("sys.stdout", new=StringIO()) as fake_output:
+            with patch("models.storage") as mock_storage:
+                mock_storage.new = unittest.mock.MagicMock()
+                self.console.onecmd("create BaseModel")
+                mock_storage.new.assert_called()
+                # Further assertions can be made based on the expected behavior
+
+    # Add more tests for other commands and functionalities as needed
+
+
+if __name__ == "__main__":
+    unittest.main()

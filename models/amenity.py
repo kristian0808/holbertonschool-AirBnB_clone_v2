@@ -7,7 +7,6 @@ from models.place import place_amenity
 from tests.test_models.test_base_model import TestBaseModel
 
 
-
 class Amenity(BaseModel, Base):
     """Amenity model"""
     __tablename__ = "amenities"

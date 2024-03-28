@@ -21,10 +21,11 @@ class TestBaseModel(unittest.TestCase):
         pass
 
     def tearDown(self):
-        try:
-            os.remove('file.json')
-        except FileNotFoundError:
-            pass
+        """Clean up after each test"""
+    try:
+        os.remove('file.json')
+    except FileNotFoundError:
+        pass
 
     def test_default(self):
         """ """

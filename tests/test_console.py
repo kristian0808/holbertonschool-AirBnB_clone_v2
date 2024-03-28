@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from console import HBNBCommand
 
+
 class TestHBNBCommand(unittest.TestCase):
     def setUp(self):
         self.hbnb_cmd = HBNBCommand()
@@ -44,10 +45,13 @@ class TestHBNBCommand(unittest.TestCase):
 
     @patch('builtins.print')
     def test_do_create(self, mock_print):
-        with patch.object(HBNBCommand.classes['BaseModel'], 'save') as mock_save:
-            self.hbnb_cmd.do_create('BaseModel name="test" age=20 is_active=True')
+        with patch.object(HBNBCommand.classes['BaseModel'],
+                          'save') as mock_save:
+            self.hbnb_cmd.do_create
+            ('BaseModel name="test" age=20 is_active=True')
             mock_save.assert_called_once()
             mock_print.assert_called_with(mock_save().id)
+
 
 if __name__ == '__main__':
     unittest.main()

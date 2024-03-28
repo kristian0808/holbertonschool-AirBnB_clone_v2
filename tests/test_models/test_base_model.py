@@ -3,11 +3,12 @@
 from models.base_model import BaseModel
 import unittest
 import datetime
+from uuid import UUID
 import json
 import os
 
 
-class TestBaseModel(unittest.TestCase):
+class test_basemodel(unittest.TestCase):
     """ """
 
     def __init__(self, *args, **kwargs):
@@ -21,11 +22,10 @@ class TestBaseModel(unittest.TestCase):
         pass
 
     def tearDown(self):
-        """Clean up after each test"""
-    try:
-        os.remove('file.json')
-    except FileNotFoundError:
-        pass
+        try:
+            os.remove('file.json')
+        except FileNotFoundError:
+            pass
 
     def test_default(self):
         """ """

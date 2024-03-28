@@ -52,6 +52,49 @@ class TestHBNBCommand(unittest.TestCase):
             mock_save.assert_called_once()
             mock_print.assert_called_with(mock_save().id)
 
+    def test_help_create(self):
+        with patch('builtins.print') as mocked_print:
+            self.instance.help_create()
+            mocked_print.assert_called_with("Creates a class of any type")
+            mocked_print.assert_called_with("[Usage]: create <className>\n")
+
+    def test_do_show_missing_class_name(self):
+        with patch('builtins.print') as mocked_print:
+            args = ""
+            self.instance.do_show(args)
+            mocked_print.assert_called_with("** class name missing **")
+
+    def test_do_show_nonexistent_class(self):
+        with patch('builtins.print') as mocked_print:
+            args = "NonExistentClass 123"
+            self.instance.do_show(args)
+            mocked_print.assert_called_with("** class doesn't exist **")
+
+    def test_do_update_missing_class_name(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().do_update(" ")
+            mocked_print.assert_called_with("** class name missing **")
+
+    def test_do_update_invalid_class_name(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().do_update("InvalidClass 1")
+            mocked_print.assert_called_with("** class doesn't exist **")
+
+    def test_do_update_missing_instance_id(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().do_update("ValidClass ")
+            mocked_print.assert_called_with("** instance id missing **")
+
+    # Add more test cases for different scenarios in do_update method
+
+    def test_help_update_output(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().help_update()
+            mocked_print.assert_called_with
+            ("Updates an object with new information")
+            mocked_print.assert_called_with
+            ("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == '__main__':
     unittest.main()

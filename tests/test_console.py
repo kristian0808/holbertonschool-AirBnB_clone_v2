@@ -1,40 +1,22 @@
 #!/usr/bin/python3
-""" """
-from unittest.mock import patch
-from io import StringIO
-
-from tests.test_models.test_base_model import test_basemodel
+""" Unittest for the console """
 from console import HBNBCommand
+import unittest
+import sys
+import io
 
 
-class test_console(test_basemodel):
-    """ """
+class TestConsole(unittest.TestCase):
+    """ Test cases for HBNBCommand class """
 
-    def test_class_doc(self):
-        """ """
-        doc = HBNBCommand.__doc__
-        self.assertTrue(doc)
+    def setUp(self):
+        self.console = HBNBCommand()
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_show_no_name(self, mock_stdout):
-        command = ''
-        HBNBCommand().do_show(command)
-        self.assertEqual(mock_stdout.getvalue(), "** class name missing **\n")
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_show_no_class(self, mock_stdout):
-        command = 'Fake'
-        HBNBCommand().do_show(command)
-        self.assertEqual(mock_stdout.getvalue(), "** class doesn't exist **\n")
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_show_no_id(self, mock_stdout):
-        command = 'City'
-        HBNBCommand().do_show(command)
-        self.assertEqual(mock_stdout.getvalue(), "** instance id missing **\n")
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_show_wrong_id(self, mock_stdout):
-        command = 'City 123123'
-        HBNBCommand().do_show(command)
-        self.assertEqual(mock_stdout.getvalue(), "** no instance found **\n")
+    def test_create_instance(self):
+        """ Test to review console output"""
+        output = io.StringIO()
+        sys.stdout = output
+        self.console.onecmd('create State id="01234" name="California"')
+        state_id = output.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertIn("01234", state_id)

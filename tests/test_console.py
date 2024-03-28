@@ -1,26 +1,40 @@
-import unittest
+#!/usr/bin/python3
+""" """
 from unittest.mock import patch
 from io import StringIO
-import sys
 
+from tests.test_models.test_base_model import test_basemodel
 from console import HBNBCommand
 
 
-class TestHBNBCommand(unittest.TestCase):
-    def setUp(self):
-        self.console = HBNBCommand()
+class test_console(test_basemodel):
+    """ """
 
-    def tearDown(self):
-        pass
+    def test_class_doc(self):
+        """ """
+        doc = HBNBCommand.__doc__
+        self.assertTrue(doc)
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_help_quit(self, mock_stdout):
-        self.console.onecmd('help quit')
-        self.assertEqual(mock_stdout.getvalue().strip(),
-                         "Exits the program with formatting")
+    def test_show_no_name(self, mock_stdout):
+        command = ''
+        HBNBCommand().do_show(command)
+        self.assertEqual(mock_stdout.getvalue(), "** class name missing **\n")
 
-    # Add more test methods for other commands...
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_show_no_class(self, mock_stdout):
+        command = 'Fake'
+        HBNBCommand().do_show(command)
+        self.assertEqual(mock_stdout.getvalue(), "** class doesn't exist **\n")
 
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_show_no_id(self, mock_stdout):
+        command = 'City'
+        HBNBCommand().do_show(command)
+        self.assertEqual(mock_stdout.getvalue(), "** instance id missing **\n")
 
-if __name__ == '__main__':
-    unittest.main()
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_show_wrong_id(self, mock_stdout):
+        command = 'City 123123'
+        HBNBCommand().do_show(command)
+        self.assertEqual(mock_stdout.getvalue(), "** no instance found **\n")

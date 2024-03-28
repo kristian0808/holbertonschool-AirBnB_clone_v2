@@ -71,7 +71,7 @@ class TestBaseModel(unittest.TestCase):
             new = BaseModel(**n)
 
     def test_kwargs_one(self):
-        """Test a BaseModel instance containing a single non-id key"""
+        """Test BaseModel instance containing a single non-id key"""
         n = {"Name": "test"}
         with self.assertRaises(KeyError):
             new = BaseModel(**n)

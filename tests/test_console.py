@@ -1,43 +1,100 @@
 import unittest
 from unittest.mock import patch
-from io import StringIO
 from console import HBNBCommand
-from models.base_model import BaseModel
-from models import storage
 
 
 class TestHBNBCommand(unittest.TestCase):
-
     def setUp(self):
-        """Set up the test case environment."""
-        self.console = HBNBCommand()
+        self.hbnb_cmd = HBNBCommand()
 
     def test_prompt(self):
-        """Test the prompt attribute."""
-        self.assertEqual(self.console.prompt, "(hbnb) ")
+        self.assertEqual(self.hbnb_cmd.prompt, '(hbnb) ')
+
+    def test_precmd(self):
+        line = 'create BaseModel'
+        new_line = self.hbnb_cmd.precmd(line)
+        self.assertEqual(new_line, 'create BaseModel')
+
+    def test_do_quit(self):
+        with self.assertRaises(SystemExit):
+            self.hbnb_cmd.do_quit(None)
+
+    @patch('builtins.print')
+    def test_help_quit(self, mock_print):
+        self.hbnb_cmd.help_quit()
+        mock_print.assert_called_with("Exits the program with formatting\n")
+
+    def test_do_EOF(self):
+        with patch('sys.exit') as mock_exit:
+            self.hbnb_cmd.do_EOF(None)
+            mock_exit.assert_called_once()
+
+    @patch('builtins.print')
+    def test_help_EOF(self, mock_print):
+        self.hbnb_cmd.help_EOF()
+        mock_print.assert_called_with("Exits the program without formatting\n")
 
     def test_emptyline(self):
-        """Test the emptyline method does nothing."""
-        with patch("sys.stdout", new=StringIO()) as fake_output:
-            self.console.onecmd("\n")
-            self.assertEqual(fake_output.getvalue(), "")
+        self.assertIsNone(self.hbnb_cmd.emptyline())
 
-    def test_quit(self):
-        """Test the quit command exits the program."""
-        with self.assertRaises(SystemExit):
-            self.console.onecmd("quit")
+    def test_key_value_parser(self):
+        args = ['name="John"', 'age=25', 'is_active=True']
+        result = self.hbnb_cmd._key_value_parser(args)
+        expected_result = {'name': 'John', 'age': 25, 'is_active': True}
+        self.assertEqual(result, expected_result)
 
-    def test_create(self):
-        """Test object creation."""
-        with patch("sys.stdout", new=StringIO()) as fake_output:
-            with patch("models.storage") as mock_storage:
-                mock_storage.new = unittest.mock.MagicMock()
-                self.console.onecmd("create BaseModel")
-                mock_storage.new.assert_called()
-                # Further assertions can be made based on the expected behavior
+    @patch('builtins.print')
+    def test_do_create(self, mock_print):
+        with patch.object(HBNBCommand.classes['BaseModel'],
+                          'save') as mock_save:
+            self.hbnb_cmd.do_create
+            ('BaseModel name="test" age=20 is_active=True')
+            mock_save.assert_called_once()
+            mock_print.assert_called_with(mock_save().id)
 
-    # Add more tests for other commands and functionalities as needed
+    def test_help_create(self):
+        with patch('builtins.print') as mocked_print:
+            self.instance.help_create()
+            mocked_print.assert_called_with("Creates a class of any type")
+            mocked_print.assert_called_with("[Usage]: create <className>\n")
+
+    def test_do_show_missing_class_name(self):
+        with patch('builtins.print') as mocked_print:
+            args = ""
+            self.instance.do_show(args)
+            mocked_print.assert_called_with("** class name missing **")
+
+    def test_do_show_nonexistent_class(self):
+        with patch('builtins.print') as mocked_print:
+            args = "NonExistentClass 123"
+            self.instance.do_show(args)
+            mocked_print.assert_called_with("** class doesn't exist **")
+
+    def test_do_update_missing_class_name(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().do_update(" ")
+            mocked_print.assert_called_with("** class name missing **")
+
+    def test_do_update_invalid_class_name(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().do_update("InvalidClass 1")
+            mocked_print.assert_called_with("** class doesn't exist **")
+
+    def test_do_update_missing_instance_id(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().do_update("ValidClass ")
+            mocked_print.assert_called_with("** instance id missing **")
+
+    # Add more test cases for different scenarios in do_update method
+
+    def test_help_update_output(self):
+        with patch('builtins.print') as mocked_print:
+            HBNBCommand().help_update()
+            mocked_print.assert_called_with
+            ("Updates an object with new information")
+            mocked_print.assert_called_with
+            ("Usage: update <className> <id> <attName> <attVal>\n")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

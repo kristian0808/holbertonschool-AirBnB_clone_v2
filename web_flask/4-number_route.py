@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """
-add new python route
+add number route
 """
-
 
 from flask import Flask
 app = Flask(__name__)
@@ -19,7 +18,7 @@ def index():
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
     """
-    return HBNB!
+    return HBNB
     """
     return 'HBNB'
 
@@ -33,14 +32,24 @@ def c(text):
     return 'C ' + text
 
 
-@app.route('/python/', strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
-def python(text='is cool'):
+def python(text):
     """
-    return python is cool
+    return python + text
     """
     text = text.replace('_', ' ')
     return 'Python ' + text
+
+
+@app.route('/number/<int:n>', strict_slashes=False)
+def number(n):
+    """
+    return number + int
+    """
+    if isinstance(n, int):
+        return f'{n} is a number'
+    else:
+        return 'Not Found', 404
 
 
 if __name__ == '__main__':
